@@ -1,0 +1,103 @@
+# Customer Churn Analysis
+# Author: Sneha Devarapally
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 1. Create a sample customer dataset
+data = {
+    "CustomerID": range(1, 16),
+    "TenureMonths": [2, 12, 3, 24, 5, 18, 1, 30, 7, 15, 4, 22, 6, 28, 9],
+    "LoginFrequency": [2, 20, 3, 25, 5, 18, 1, 28, 6, 15, 4, 22, 7, 30, 9],
+    "SupportCalls": [5, 1, 4, 0, 3, 1, 6, 0, 3, 2, 5, 1, 4, 0, 2],
+    "MonthlyCharges": [500, 700, 550, 800, 600, 750, 450, 900, 620, 720, 530, 780, 610, 850, 650],
+    "Churn": ["Yes", "No", "Yes", "No", "Yes", "No", "Yes", "No",
+              "Yes", "No", "Yes", "No", "Yes", "No", "No"]
+}
+
+df = pd.DataFrame(data)
+
+# 2. Display the dataset
+print("CUSTOMER CHURN DATA")
+print(df)
+
+# 3. Check for missing values
+print("\nMissing Values:")
+print(df.isnull().sum())
+
+# 4. Basic statistical analysis
+print("\nDataset Summary:")
+print(df.describe())
+
+# 5. Calculate churn rate
+churn_rate = (df["Churn"] == "Yes").mean() * 100
+print(f"\nCustomer Churn Rate: {churn_rate:.2f}%")
+
+# 6. Compare churned and retained customers
+print("\nAverage Customer Details by Churn Status:")
+print(
+    df.groupby("Churn")[
+        ["TenureMonths", "LoginFrequency", "SupportCalls", "MonthlyCharges"]
+    ].mean().round(2)
+)
+
+# 7. Visualize churn distribution
+sns.set_theme(style="whitegrid")
+
+sns.countplot(data=df, x="Churn")
+plt.title("Customer Churn Distribution")
+plt.xlabel("Churn Status")
+plt.ylabel("Number of Customers")
+plt.tight_layout()
+plt.savefig("churn_distribution.png")
+plt.show()
+
+# 8. Compare login frequency with churn
+sns.boxplot(data=df, x="Churn", y="LoginFrequency")
+plt.title("Login Frequency vs Customer Churn")
+plt.xlabel("Churn Status")
+plt.ylabel("Login Frequency")
+plt.tight_layout()
+plt.savefig("login_frequency_vs_churn.png")
+plt.show()
+
+# 9. Compare support calls with churn
+sns.barplot(data=df, x="Churn", y="SupportCalls", errorbar=None)
+plt.title("Average Support Calls by Churn Status")
+plt.xlabel("Churn Status")
+plt.ylabel("Average Support Calls")
+plt.tight_layout()
+plt.savefig("support_calls_vs_churn.png")
+plt.show()
+
+# 10. Generate basic findings
+churned = df[df["Churn"] == "Yes"]
+retained = df[df["Churn"] == "No"]
+
+print("\nKEY FINDINGS")
+print(f"Total Customers: {len(df)}")
+print(f"Churned Customers: {len(churned)}")
+print(f"Retained Customers: {len(retained)}")
+print(
+    f"Average Login Frequency of Churned Customers: "
+    f"{churned['LoginFrequency'].mean():.2f}"
+)
+print(
+    f"Average Login Frequency of Retained Customers: "
+    f"{retained['LoginFrequency'].mean():.2f}"
+)
+print(
+    f"Average Support Calls from Churned Customers: "
+    f"{churned['SupportCalls'].mean():.2f}"
+)
+
+# 11. Recommendations
+print("\nRECOMMENDATIONS")
+print("1. Improve customer engagement through regular communication.")
+print("2. Investigate frequent customer support issues.")
+print("3. Provide onboarding support for new customers.")
+print("4. Monitor customers with low login frequency.")
+print("5. Collect feedback to understand cancellation reasons.")
+
+print("\nAnalysis completed successfully!")
